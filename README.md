@@ -8,6 +8,8 @@ Therefore making this post request creates a pack in Packs if one is not present
 
 Location of a Wolf is represent by a PointF structure - the x coordinate representing latitude and the y representing longitude.
 
+All tests of the Restful Apis are conducted with Postman.
+
 ## Wolves
 
 POST: api/Wolves
