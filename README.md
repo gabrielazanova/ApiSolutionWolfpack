@@ -21,7 +21,7 @@ sample:
             "name": "Konstantin",
             "gender": 1,
             "birthdate":"1999-03-24",
-            "location": {"x":51.448149,,"y":5.494754}
+            "location": {"x":51.448149,"y":5.494754}
         }
 
 GET: api/Wolves
@@ -69,6 +69,6 @@ DELETE: api/WolfPacks/packname/id
 
 GET: api/Packs
 
-GET: api/Packs/id
+GET: api/Packs/packname
 
 DELETE: api/Packs/packname
