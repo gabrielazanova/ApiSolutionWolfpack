@@ -8,7 +8,7 @@ Therefore making this post request creates a pack in Packs if one is not present
 
 Location of a Wolf is represent by a PointF structure - the x coordinate representing latitude and the y representing longitude.
 
-All tests of the Restful Apis are conducted with Postman.
+All tests of the Restful Apis are conducted with Postman. There is no SSL certificate verification, so when calling the api's this option should be turned off.
 
 ## Wolves
 
@@ -21,7 +21,7 @@ sample:
             "name": "Konstantin",
             "gender": 1,
             "birthdate":"1999-03-24",
-            "location": {"x":51.448149,"y":5.494754}
+            "location": {"x":51.449409,"y":5.494774}
         }
 
 GET: api/Wolves
