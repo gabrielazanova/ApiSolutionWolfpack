@@ -2,13 +2,12 @@
 The solution includes 3 entities - Packs, Wolves and their relation WolfPacks.
 
 They are managed and stored in a inmemory database. Such is used instead of sqlserver for demonstrative purposes.
-It is assumed that wolves are identified by ids and that packs are identified by names.
-Packs consist of one or more wolves. They are created through a post request to WolfPacks.
-Therefore making this post request creates a pack in Packs if one is not present.
 
-Location of a Wolf is represent by a PointF structure - the x coordinate representing latitude and the y representing longitude.
+It is assumed that wolves are identified by ids. Attributes are the name saved as a string, gender saved as an int (by ISO standart), birthdate as a datetime and location of a Wolf is represent by a PointF structure - the x coordinate representing latitude and the y representing longitude. 
+The packs are identified by names.
+The relation wolfpacks has an id, a packname and a wolfname, representing a many to many relationship between Wolf and Pack.
 
-All tests of the Restful Apis are conducted with Postman. There is no SSL certificate verification, so when calling the api's this option should be turned off.
+All tests of the endpoints are conducted with Postman. There is no SSL certificate, so when calling the api's the verification should be turned off.
 
 ## Wolves
 
