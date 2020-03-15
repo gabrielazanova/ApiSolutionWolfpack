@@ -50,7 +50,7 @@ namespace ApiSolutionWolfpack.Controllers
         // Delete a pack
         // DELETE: api/Packs/packname
         [HttpDelete("{packname}")]
-        public async Task<ActionResult<Pack>> DeletePack(String packName)
+        public async Task<ActionResult<String>> DeletePack(String packName)
         {
             var pack = await _context.Packs.FindAsync(packName);
             if (pack == null)
@@ -58,7 +58,10 @@ namespace ApiSolutionWolfpack.Controllers
                 return NotFound();
             }
 
+            //remove from packs
             _context.Packs.Remove(pack);
+
+            //remove every relation with the wolves from the many-to-many relationship
             _context.WolfPacks.RemoveRange(
                 _context.WolfPacks.Where(x => x.PackName == pack.Name));
            
@@ -70,8 +73,8 @@ namespace ApiSolutionWolfpack.Controllers
             {
                 throw;
             }
-
-            return Ok("Successfully deleted pack with name " + packName);
+            string json = JsonConvert.SerializeObject(pack, Formatting.Indented);
+            return json;
         }
     }
 }

@@ -29,6 +29,7 @@ namespace ApiSolutionWolfpack.Controllers
         public async Task<ActionResult<String>> GetWolves()
         {
             var wolves = await _context.Wolves.ToListAsync();
+            //get a list of wolves, listing their basic information 
             var wolfList = (from wolf in _context.Wolves
                                      select new
                                      {
@@ -67,7 +68,7 @@ namespace ApiSolutionWolfpack.Controllers
             {
                 return NotFound("Wolf with id " + id + " was not found");
             }
-
+            //get the location of the wolf with the preset id
             var wolfLocation = (from w in _context.Wolves
                                 where w.WolfId == id
                                 select new
@@ -136,7 +137,7 @@ namespace ApiSolutionWolfpack.Controllers
         // Add a wolf
         // POST: api/Wolves
         [HttpPost]
-        public async Task<ActionResult<Wolf>> PostWolf(Wolf wolf)
+        public async Task<ActionResult<String>> PostWolf(Wolf wolf)
         {
             _context.Wolves.Add(wolf);
 
@@ -149,13 +150,14 @@ namespace ApiSolutionWolfpack.Controllers
                 throw;
             }
 
-            return Ok("Successfully added wolf with id " + wolf.WolfId);
+            string json = JsonConvert.SerializeObject(wolf, Formatting.Indented);
+            return json;
         }
 
         // Delete a wolf
         // DELETE: api/Wolves/wolfid
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Wolf>> DeleteWolf(long id)
+        public async Task<ActionResult<String>> DeleteWolf(long id)
         {
             var wolf = await _context.Wolves.FindAsync(id);
             if (wolf == null)
@@ -203,7 +205,8 @@ namespace ApiSolutionWolfpack.Controllers
             {
                 throw;
             }
-            return Ok("Successfully deleted wolf with id " + id);
+            string json = JsonConvert.SerializeObject(wolf, Formatting.Indented);
+            return json;
         }
     }
 }

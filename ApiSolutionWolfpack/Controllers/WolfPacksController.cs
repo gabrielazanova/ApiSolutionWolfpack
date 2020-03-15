@@ -31,19 +31,23 @@ namespace ApiSolutionWolfpack.Controllers
 
             foreach (Pack pack in packs)
             {
-
                 List<Wolf> wolfList = new List<Wolf>();
+                
+                //get the list of wolf ids which are in each pack
                 List<long> wolfIdList = (from s in _context.WolfPacks
                                          where s.PackName == pack.Name
                                          select s.WolfId).ToList();
-                //if there are no wolves left in the pack, delete it
+
+                //if there are wolves in the pack 
                 if (wolfIdList.Count() > 0)
                 {
                     foreach (long wolfId in wolfIdList)
                     {
                         var wolf = await _context.Wolves.FindAsync(wolfId);
+                        //add each wolf
                         wolfList.Add(wolf);
                     }
+                    //add pack with wolves
                     wolfpacks.Add(pack.Name, wolfList);
                 }
 
@@ -57,6 +61,7 @@ namespace ApiSolutionWolfpack.Controllers
                 }
 
             }
+
             string json = JsonConvert.SerializeObject(wolfpacks, Formatting.Indented);
             return json;
         }
@@ -68,13 +73,21 @@ namespace ApiSolutionWolfpack.Controllers
         {
             var pack = await _context.Packs.FindAsync(packName);
             List<Wolf> wolfList = new List<Wolf>();
+
+            //get the list of wolf ids which are in each pack
             List<long> wolfIdList = (from s in _context.WolfPacks
                                      where s.PackName == packName
                                      select s.WolfId).ToList();
-            if (wolfIdList == null || pack == null)
+
+            //return not found if there are no wolves in the pack it means that there is no such
+            //pack since a pack exists with one or more wolves. Or return not found If there is no 
+            //such pack
+            if (!(wolfIdList.Count() > 0) || pack == null)
             {
                 return NotFound("Pack " + packName + " not found");
             }
+
+            //build the response
             foreach (long wolfId in wolfIdList)
             {
                 var wolf = await _context.Wolves.FindAsync(wolfId);
@@ -84,25 +97,31 @@ namespace ApiSolutionWolfpack.Controllers
             string json = JsonConvert.SerializeObject(wolfList, Formatting.Indented);
             return json;
         }
-
+        
         // Delete a pack 
         // DELETE: api/WolfPacks/packname
         [HttpDelete("{packname}")]
-        public async Task<ActionResult<WolfPack>> DeleteWolfPack(string packName)
+        public async Task<ActionResult<String>> DeleteWolfPack(string packName)
         {
+            //Get all relations in which the pack exists
             var wolfPack = _context.WolfPacks.Where(x => x.PackName == packName);
 
+            //If there are none return not found
             if (wolfPack == null)
             {
                 return NotFound("Pack " + packName +" not found");
             }
+
             var pack = _context.Packs.Where(x => x.Name == packName);
 
+            //remove the pack
             _context.Packs.RemoveRange(
                 _context.Packs.Where(x => x.Name == packName));
 
+            //remove all relations of the pack
             _context.WolfPacks.RemoveRange(
                 _context.WolfPacks.Where(x => x.PackName == packName));
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -112,7 +131,8 @@ namespace ApiSolutionWolfpack.Controllers
                 throw;
             }
 
-            return Ok("Successfully deleted pack " + packName);
+            string json = JsonConvert.SerializeObject(pack, Formatting.Indented);
+            return json;
         }
 
         // Get information for wolf from a pack
@@ -120,6 +140,7 @@ namespace ApiSolutionWolfpack.Controllers
         [HttpGet("{packname}/{wolfid}")]
         public async Task<ActionResult<String>> GetWolfInPack(string packName, long wolfId)
         {
+            //get the wolf id
             List<long> wolfL = (from s in _context.WolfPacks
                                  where s.PackName == packName && s.WolfId == wolfId
                                  select s.WolfId).ToList();
@@ -140,10 +161,11 @@ namespace ApiSolutionWolfpack.Controllers
             return json;
 
         }
+
         // Delete a wolf in a pack (if last wolf then pack is deleted as well)
         // DELETE: api/WolfPacks/packname/wolfid
         [HttpDelete("{packname}/{wolfid}")]
-        public async Task<ActionResult<WolfPack>> DeleteWolfInPack(string packName, long wolfId)
+        public async Task<ActionResult<String>> DeleteWolfInPack(string packName, long wolfId)
         {
             var pack = await _context.Packs.FindAsync(packName);
             var wolf = await _context.Wolves.FindAsync(wolfId);
@@ -188,14 +210,14 @@ namespace ApiSolutionWolfpack.Controllers
             {
                 throw;
             }
-
-            return Ok("Successfully deleted wolf with id " + wolfId + " in pack " + packName);
+            string json = JsonConvert.SerializeObject(wolf, Formatting.Indented);
+            return json;
         }
 
         // Add a wolf to a pack (creates the pack if did not exist before)
         // POST: api/WolfPacks
         [HttpPost]
-        public async Task<ActionResult<WolfPack>> PostWolfPack(WolfPack wolfPack)
+        public async Task<ActionResult<String>> PostWolfPack(WolfPack wolfPack)
         {
             var wolf = await _context.Wolves.FindAsync(wolfPack.WolfId);
             var pack = await _context.Packs.FindAsync(wolfPack.PackName);
