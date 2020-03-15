@@ -7,7 +7,7 @@ It is assumed that wolves are identified by ids. Attributes are the name saved a
 The packs are identified by names.
 The relation wolfpacks has an id, a packname and a wolfname, representing a many to many relationship between Wolf and Pack.
 
-All tests of the endpoints are conducted with Postman. There is no SSL certificate, so when calling the api's the verification should be turned off.
+All tests of the endpoints are conducted with Postman with SSL verification turned off. 
 
 ## Wolves
 
